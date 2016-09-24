@@ -1,0 +1,38 @@
+{
+  "name": "ansible-dynamic-inventory",
+  "version": "1.0.0",
+  "description": "Ansible Dynamic Inventory Script for LXD Containers",
+  "main": "lxd.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/june07/ansible-dynamic-inventory.git"
+  },
+  "dependencies": {
+    "unirest": "latest",
+    "mkdirp": "latest",
+    "openssl-wrapper": "latest",
+    "bluebird": "latest",
+    "ini": "latest",
+    "jsonpath-plus": "latest",
+    "path": "latest",
+    "readline": "latest"
+  },
+  "keywords": [
+    "Ansible",
+    "Dynamic",
+    "Inventory",
+    "LXD",
+    "Containers",
+    "Node",
+    "Nodejs"
+  ],
+  "author": "Will Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/june07/ansible-dynamic-inventory/issues"
+  },
+  "homepage": "https://github.com/june07/ansible-dynamic-inventory#readme"
+}
