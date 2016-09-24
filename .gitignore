@@ -1,4 +1,3 @@
-*
-!.gitignore
-!lxd.js
-!lxd.ini
+ansible
+tmp
+node_modules
