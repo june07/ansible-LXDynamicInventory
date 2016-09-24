@@ -14,8 +14,9 @@ const	Promise = require('bluebird'),
 	Readline = require('readline'),
 	configAnsible = ini.parse(fs.readFileSync('./ansible.cfg', 'utf-8')),
 	opensslAsync = Promise.promisify(openssl.exec),
-	config = ini.parse(fs.readFileSync(path.join(process.env.ANSIBLE_HOME, 'contrib/inventory/lxd.ini'), 'utf-8')),
-	ANSIBLE_REMOTE_TMP = configAnsible.defaults.remote_tmp.replace("~", os.homedir()),
+	config = ini.parse(fs.readFileSync(path.join(process.env.ANSIBLE_HOME, 'inventory/lxd.ini'), 'utf-8')),
+	ANSIBLE_REMOTE_TMP = function() { if (configAnsible.defaults.remote_tmp)
+		return configAnsible.defaults.remote_tmp.replace("~", os.homedir()).replace("$HOME", os.homedir()) }() || os.homedir() +"/.ansible/tmp",
 	KEYDIR = path.join(ANSIBLE_REMOTE_TMP, "ssl"),
 	CA_KEY = path.join(KEYDIR, "ca.key"),
 	CA_CRT = path.join(KEYDIR, "ca.crt"),
@@ -41,12 +42,13 @@ var getLxdHosts = function() {
 				});
 			});
 		}
-		var ansibleInventory = configAnsible.defaults.inventory.replace("~", os.homedir());
+		var ansibleInventory = configAnsible.defaults.inventory || "./inventory";
+		ansibleInventory = ansibleInventory.replace("~", os.homedir()).replace("$HOME", os.homedir());
 		if (fs.statSync(ansibleInventory).isDirectory()) {
 			var inventoryReadPromises = [];
 			fs.readdirSync(ansibleInventory).forEach(function(file) {
 
-				if (! file.startsWith(".") && file.match(/^(.*\.(?!(orig|bak|ini|retry|pyc|pyo|js)$))?[^.]*$/i)) {
+				if (! file.startsWith(".") && file.match(/^(.*\.(?!(orig|bak|ini|retry|pyc|pyo|js|nex)$))?[^.]*$/i)) {
 					inventoryReadPromises.push(parseConfigFile(path.join(ansibleInventory, file)));
 				}
 			})
@@ -200,10 +202,8 @@ generateClientCertificate()
   			});
   			Promise.all(hostsToInventory)
   			.then(function() {});
-			});
-	  ;;
-	  case "--host": console.log("Add this functionality!  https://github.com/june07/ansible.git");
-	  ;;
+			}); break;
+	  case "--host": console.log("Add this functionality!  https://github.com/june07/ansible.git"); break;
 	}
 });
 })();
