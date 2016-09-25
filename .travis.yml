@@ -1,3 +1,5 @@
+before_install:
+- sudo apt-get install npm
 install:
 - npm install
 language: node_js
