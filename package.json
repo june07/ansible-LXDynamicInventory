@@ -19,7 +19,7 @@
     "ini": "latest",
     "jsonpath-plus": "latest",
     "path": "latest",
-    "readline": "latest"
+    "readline": "latest",
     "nexe": "latest"
   },
   "keywords": [
