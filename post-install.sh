@@ -54,6 +54,7 @@ lxc remote list; spinner 5
 
 figlet -f wideterm --gay Configuring nested container... -S
 lxc launch $IMAGE ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer
+lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer user.ansible.group adigroup
 #lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
 #lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer/tmp/
@@ -66,4 +67,4 @@ echo -e "[defaults]\nremote_tmp     = $HOME/.ansible/tmp" > ansible.cfg
 echo -e "inventory     = inventory" >> ansible.cfg
 mkdir inventory
 echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
-
+./inventory/lxd.nex --list
