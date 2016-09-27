@@ -30,7 +30,7 @@ else
   figlet -f wideterm --gay LXD is already on this host, skipping configuration... -S
   figlet -f wideterm --gay Updating apt and installing apt-cacher... -S
   sudo apt-get update
-  sudo apt-get dist-upgrade -y
+  sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-cacher
   sudo perl -pi -e s/AUTOSTART=0/AUTOSTART=1/g /etc/default/apt-cacher
   sudo systemctl start apt-cacher.service
