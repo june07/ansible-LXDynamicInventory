@@ -6,3 +6,5 @@ install:
 language: node_js
 node_js:
   - "6"
+env:
+- DEBIAN_FRONTEND=noninteractive

@@ -1,15 +1,16 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive;
 HOSTNAME=$1
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
-sudo DEBIAN_FRONTEND=noninteractive apt-get install git -y
+sudo apt-get install git -y
 git clone https://github.com/ansible/ansible.git
 cd ansible
 git submodule update --init --recursive
 cd ..
 
-nexe -i lxd.js -o lxd.nex -f
+nodejs --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
 
 chmod +x ./lxd.nex;
 mkdir ./ansible/inventory
@@ -34,9 +35,9 @@ if [[ ! $(dpkg --list lxd) ]]; then
 else
   figlet -f wideterm --gay LXD is already on this host, skipping configuration... -S
   figlet -f wideterm --gay Updating apt and installing apt-cacher... -S
-  sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
-  sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-cacher
+  sudo sudo apt-get update -y
+  sudo apt-get dist-upgrade -y
+  sudo apt-get install -y apt-cacher
   sudo perl -pi -e s/AUTOSTART=0/AUTOSTART=1/g /etc/default/apt-cacher
   sudo systemctl start apt-cacher.service
   lxc image copy $IMAGE local:
