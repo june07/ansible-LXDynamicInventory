@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env nodejs --harmony
 module.exports = (function() {
 'use strict';
 const	Promise = require('bluebird'),
