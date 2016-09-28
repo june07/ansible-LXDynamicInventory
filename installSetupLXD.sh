@@ -10,11 +10,12 @@ sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install lxd -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python lxd -y -q
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y apt-cacher -q
 fi
 
+newgrp lxd
 sudo lxd init --auto --network-address 10.202.${NETWORK}.1 --network-port 8443 --trust-password=$PASSWORD
 
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
