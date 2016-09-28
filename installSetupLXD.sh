@@ -6,13 +6,13 @@ LXDSERVER=$4
 if [[ $(echo $CONTAINER | grep -i server) || $(echo $CONTAINER | grep -i container) ]]; then
   sudo echo -e "Acquire::http::Proxy \"http://${LXDSERVER}:3142\"" >> /etc/apt.conf;
 fi
-sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
-sudo apt-get update
-sudo apt-get dist-upgrade -y
-sudo apt-get install lxd -y
-sudo apt-get install python -y
+sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y -q
+sudo apt-get update -y -q
+sudo apt-get dist-upgrade -y -q
+sudo apt-get install lxd -y -q
+sudo apt-get install python -y -q
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-cacher
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-cacher -q
 fi
 
 sudo lxd init --auto --network-address 10.202.${NETWORK}.1 --network-port 8443 --trust-password=$PASSWORD

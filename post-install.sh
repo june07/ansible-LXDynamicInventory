@@ -4,7 +4,7 @@ HOSTNAME=$1
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
-sudo apt-get install git -y
+sudo apt-get install git -y -q
 git clone https://github.com/ansible/ansible.git
 cd ansible
 git submodule update --init --recursive
@@ -35,9 +35,9 @@ if [[ ! $(dpkg --list lxd) ]]; then
 else
   figlet -f wideterm --gay LXD is already on this host, skipping configuration... -S
   figlet -f wideterm --gay Updating apt and installing apt-cacher... -S
-  sudo sudo apt-get update -y
-  sudo apt-get dist-upgrade -y
-  sudo apt-get install -y apt-cacher
+  sudo sudo apt-get update -y -q
+  sudo apt-get dist-upgrade -y -q
+  sudo apt-get install -y -q apt-cacher
   sudo perl -pi -e s/AUTOSTART=0/AUTOSTART=1/g /etc/default/apt-cacher
   sudo systemctl start apt-cacher.service
   lxc image copy $IMAGE local:
