@@ -5,6 +5,7 @@ HOSTNAME=$1
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install git -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install build-essential -y -q
 git clone https://github.com/ansible/ansible.git
 cd ansible
 git submodule update --init --recursive
