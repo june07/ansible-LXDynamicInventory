@@ -6,13 +6,13 @@ LXDSERVER=$4
 if [[ $(echo $CONTAINER | grep -i server) || $(echo $CONTAINER | grep -i container) ]]; then
   sudo echo -e "Acquire::http::Proxy \"http://${LXDSERVER}:3142\"" >> /etc/apt.conf;
 fi
-sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y -q
-sudo apt-get update -y -q
-sudo apt-get dist-upgrade -y -q
-sudo apt-get install lxd -y -q
-sudo apt-get install python -y -q
+sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install lxd -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python -y -q
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-cacher -q
+  sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y apt-cacher -q
 fi
 
 sudo lxd init --auto --network-address 10.202.${NETWORK}.1 --network-port 8443 --trust-password=$PASSWORD
