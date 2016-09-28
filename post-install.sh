@@ -61,10 +61,13 @@ lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdco
 lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
 # Setup LXD container
 
-
 cd ansible
 echo -e "[defaults]\nremote_tmp     = $HOME/.ansible/tmp" > ansible.cfg
 echo -e "inventory     = inventory" >> ansible.cfg
 mkdir inventory
 echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
+
+cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
+perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
 ./inventory/lxd.nex --list
+perl -0 -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
