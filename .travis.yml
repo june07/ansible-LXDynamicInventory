@@ -1,5 +1,6 @@
 before_install:
-- sudo apt-get install npm -y
+- DEBIAN_FRONTEND=noninteractive sudo apt-get install npm -y
+
 install:
 - npm install
 language: node_js
