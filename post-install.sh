@@ -5,11 +5,16 @@ PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
 sudo DEBIAN_FRONTEND=noninteractive apt-get install git -y
 git clone https://github.com/ansible/ansible.git
+cd ansible
+git submodule update --init --recursive
+cd ..
 
 nexe -i lxd.js -o lxd.nex -f
 
 chmod +x ./lxd.nex;
+mkdir ./ansible/inventory
 cp ./lxd.nex ./ansible/inventory/
+cp ./lxd.ini ./ansible/inventory/
 
 function spinner {
 COUNTER=0
@@ -67,7 +72,9 @@ echo -e "inventory     = inventory" >> ansible.cfg
 mkdir inventory
 echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
 
-cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
-perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
+sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
+sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
 ./inventory/lxd.nex --list
-perl -0 -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
+ansible -m setup ubuntu-adi-test-lxdserver
+sudo perl -0 -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
+
