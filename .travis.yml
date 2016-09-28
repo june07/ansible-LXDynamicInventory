@@ -1,10 +1,20 @@
 before_install:
-- DEBIAN_FRONTEND=noninteractive sudo apt-get install npm -y
+  - DEBIAN_FRONTEND=noninteractive sudo apt-get install npm -y
 
 install:
-- npm install
+  - npm install
 language: node_js
 node_js:
   - "6"
+sudo: required
+dist: trusty
 env:
-- DEBIAN_FRONTEND=noninteractive
+  - CXX=g++-4.8
+  - DEBIAN_FRONTEND=noninteractive
+adons:
+  apt:
+    sources:
+      -ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
