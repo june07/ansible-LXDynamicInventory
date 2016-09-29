@@ -4,6 +4,11 @@ before_install:
 install:
   - npm install
 language: node_js
+cache:
+  directories:
+    - ansible
+    - tmp
+    - node_modules 
 node_js:
   - "6"
 sudo: required
@@ -18,8 +23,3 @@ adons:
     packages:
       - g++-4.8
 
-cache:
-  directories:
-    - $HOME/ansible
-    - $HOME/tmp
-    - $HOME/node_modules 
