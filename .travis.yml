@@ -20,9 +20,9 @@ adons:
 
 cache:
   directories:
-    - ./ansible
-    - ./tmp
-    - ./node_modules 
+    - ansible
+    - tmp
+    - node_modules 
     - $TRAVIS_BUILD_DIR/ansible
-    - $TRAVIS_BUILD_DIR/./tmp
-    - $TRAVIS_BUILD_DIR/./node_modules 
+    - $TRAVIS_BUILD_DIR/tmp
+    - $TRAVIS_BUILD_DIR/node_modules 
