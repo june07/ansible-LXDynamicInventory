@@ -4,6 +4,10 @@ HOSTNAME=$1
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
+sudo apt-get remove -y postgresql-9.1
+sudo apt-get remove -y postgresql-9.2
+sudo apt-get remove -y postgresql-9.3
+sudo apt-get remove -y postgresql-9.4
 sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
