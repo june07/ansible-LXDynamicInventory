@@ -18,3 +18,8 @@ adons:
     packages:
       - g++-4.8
 
+cache:
+  directories:
+    - ansible
+    - tmp
+    - node_modules 
