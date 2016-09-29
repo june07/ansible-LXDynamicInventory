@@ -38,12 +38,10 @@ if [[ ! $(dpkg --list lxd) ]]; then
   ./installSetupLXD.sh local 80
 else
   toilet -f wideterm --gay LXD is already on this host, skipping configuration... -S
-  toilet -f wideterm --gay Updating apt and installing apt-cacher... -S
+  toilet -f wideterm --gay Updating apt and installing apt-cacher-ng... -S
   sudo sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y -q apt-cacher
-  sudo perl -pi -e s/AUTOSTART=0/AUTOSTART=1/g /etc/default/apt-cacher
-  sudo systemctl start apt-cacher.service
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y -q apt-cacher-ng
   lxc image copy $IMAGE local:
   lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
   spinner 15
