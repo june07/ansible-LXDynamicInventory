@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 export DEBIAN_FRONTEND=noninteractive;
 HOSTNAME=$1
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 CONTAINER=$1
 NETWORK=$2
 PASSWORD=$3
@@ -9,7 +9,6 @@ fi
 sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install lxd -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python lxd -y -q
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y apt-cacher-ng -q
