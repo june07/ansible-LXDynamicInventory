@@ -19,7 +19,7 @@ cd ansible
 git submodule update --init --recursive
 cd ..
 
-node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
+#node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
 
 chmod +x ./lxd.nex;
 mkdir ./ansible/inventory

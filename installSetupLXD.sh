@@ -14,7 +14,9 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y apt-cacher-ng -q
 fi
 
-sudo newgrp - lxd
+sudo lxd
+sudo newgrp lxd
+sudo lxd
 sudo lxd init --auto --network-address 10.202.${NETWORK}.1 --network-port 8443 --trust-password=$PASSWORD
 
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
