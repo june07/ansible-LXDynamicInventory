@@ -10,10 +10,8 @@ cache:
     - tmp
     - ./tmp
     - /tmp
-    - ~/build/june07/ansible-dyna
-amic-inventory/tmp
-    - $HOME/build/june07/ansible-dyna
-amic-inventory/tmp
+    - ~/build/june07/ansible-dyna amic-inventory/tmp
+    - $HOME/build/june07/ansible-dyna amic-inventory/tmp
     - node_modules 
 node_js:
   - "6"
