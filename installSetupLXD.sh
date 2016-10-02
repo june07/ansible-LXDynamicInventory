@@ -15,7 +15,7 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
 fi
 
 sudo lxd
-sudo newgrp lxd
+sudo newgrp lxd << EONG
 sudo lxd
 sudo lxd init --auto --network-address 10.202.${NETWORK}.1 --network-port 8443 --trust-password=$PASSWORD
 
@@ -47,4 +47,5 @@ sudo systemctl start lxd-bridge
 lxc config set core.https_address [::]:8443
 lxc config set core.trust_password $PASSWORD
 fi
+EONG
 

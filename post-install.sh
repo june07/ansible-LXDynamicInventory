@@ -55,7 +55,7 @@ fi
 CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | awk 'BEGIN {FS=" "}{print $2}' | cut -f1 -d"/")
 toilet -f wideterm --gay Configuring LXD HOST container... -S
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
-lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh -- ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
+lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
 
 spinner 15
 
@@ -71,7 +71,7 @@ lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer user.ansib
 #lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
 #lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer/tmp/
-lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer -- /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
+lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
 # Setup LXD container
 
 cd ansible
