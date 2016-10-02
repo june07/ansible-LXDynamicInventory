@@ -12,15 +12,16 @@
     "url": "git+https://github.com/june07/ansible-dynamic-inventory.git"
   },
   "dependencies": {
-    "unirest": "latest",
-    "mkdirp": "latest",
-    "openssl-wrapper": "latest",
     "bluebird": "latest",
+    "deasync": "^0.1.8",
     "ini": "latest",
     "jsonpath-plus": "latest",
+    "mkdirp": "latest",
+    "nexe": "latest",
+    "openssl-wrapper": "latest",
     "path": "latest",
     "readline": "latest",
-    "nexe": "latest"
+    "unirest": "latest"
   },
   "keywords": [
     "Ansible",

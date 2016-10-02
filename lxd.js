@@ -1,8 +1,26 @@
-#!/usr/bin/env nodejs --harmony
+#!/usr/bin/env nodejs
 module.exports = (function() {
 'use strict';
+
+function readConfigFile(file, callback) {
+	var ANSIBLE_HOME = process.env.ANSIBLE_HOME;
+	if (! process.env.ANSIBLE_HOME)
+		ANSIBLE_HOME = process.cwd();
+	try {
+		return callback(ini.parse(fs.readFileSync(path.join(ANSIBLE_HOME, file), 'utf-8')));
+	}
+	catch (error) {
+		console.log('Your CWD does not seem to be ANSIBLE_HOME.  Please set the variable ANSIBLE_HOME or change to that directory before running this script.');
+		if (process.argv.find(function (element) {
+			return (element === "--debug")
+		}))
+		console.log(error.message);
+		process.exit(1);
+	}
+}
 const	Promise = require('bluebird'),
 	Unirest = Promise.promisifyAll(require('unirest')),
+	deasync = require('deasync'),
 	fs = require('fs'),
 	os = require('os'),
 	writeFile = Promise.promisify(fs.writeFile),
@@ -12,9 +30,9 @@ const	Promise = require('bluebird'),
 	JSONPath = require('jsonpath-plus'),
 	path = require('path'),
 	Readline = require('readline'),
-	configAnsible = ini.parse(fs.readFileSync('./ansible.cfg', 'utf-8')),
+	configAnsible = readConfigFile('ansible.cfg', function(configAnsible) { return configAnsible; }),
 	opensslAsync = Promise.promisify(openssl.exec),
-	config = ini.parse(fs.readFileSync(path.join(process.env.ANSIBLE_HOME, 'inventory/lxd.ini'), 'utf-8')),
+	config = readConfigFile('inventory/lxd.ini', function(configAnsible) { return configAnsible; }),
 	ANSIBLE_REMOTE_TMP = function() { if (configAnsible.defaults.remote_tmp)
 		return configAnsible.defaults.remote_tmp.replace("~", os.homedir()).replace("$HOME", os.homedir()) }() || os.homedir() +"/.ansible/tmp",
 	KEYDIR = path.join(ANSIBLE_REMOTE_TMP, "ssl"),
@@ -24,7 +42,9 @@ const	Promise = require('bluebird'),
 	CLIENT_CRT = path.join(KEYDIR, "client.crt"),
 	CLIENT_CSR = path.join(KEYDIR, "client.csr");
 
+
 var debug;
+
 
 var getLxdHosts = function() {
 	return new Promise(function(resolve, reject) {

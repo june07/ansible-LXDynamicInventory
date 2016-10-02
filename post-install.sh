@@ -43,6 +43,7 @@ if [[ ! $(dpkg --list lxd) ]]; then
   ./installSetupLXD.sh local 80
 else
   toilet -f wideterm --gay LXD is already on this host, skipping configuration... -S
+fi
   toilet -f wideterm --gay Updating apt and installing apt-cacher-ng... -S
   sudo sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
@@ -50,12 +51,11 @@ else
   lxc image copy $IMAGE local:
   lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
   spinner 15
-fi
 
 CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | awk 'BEGIN {FS=" "}{print $2}' | cut -f1 -d"/")
 toilet -f wideterm --gay Configuring LXD HOST container... -S
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
-lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
+lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh -- ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
 
 spinner 15
 
@@ -71,7 +71,7 @@ lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer user.ansib
 #lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
 #lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer/tmp/
-lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
+lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer -- /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
 # Setup LXD container
 
 cd ansible
