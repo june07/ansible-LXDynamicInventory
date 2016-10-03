@@ -16,8 +16,9 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
 fi
 
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
-  sudo systemctl stop lxd-bridge
-  sudo systemctl --system daemon-reload
+sudo newgrp lxd << SCRIPT
+  sudo /etc/init.d/lxd-bridge stop
+SCRIPT
   sudo su -c 'cat <<EOF > /etc/default/lxd-bridge
   USE_LXD_BRIDGE="true"
   LXD_BRIDGE="lxdbr0"
@@ -36,11 +37,11 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   LXD_IPV6_NAT="false"
   LXD_IPV6_PROXY="false"
 EOF'
-  sudo systemctl enable lxd-bridge
-  sudo systemctl start lxd-bridge
-  
+sudo newgrp lxd << SCRIPT
+  sudo /etc/init.d/lxd-bridge start
   lxc config set core.https_address [::]:8443
   lxc config set core.trust_password $PASSWORD
+SCRIPT
 fi
 
 sudo newgrp lxd << SCRIPT
