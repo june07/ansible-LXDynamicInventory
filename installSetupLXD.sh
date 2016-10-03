@@ -10,14 +10,14 @@ if [[ $(echo $CONTAINER | grep -i server) || $(echo $CONTAINER | grep -i contain
 fi
 sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq python lxd
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq python lxd lxd-tools
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq apt-cacher-ng
 fi
 
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
 sudo newgrp lxd << SCRIPT
-  sudo /etc/init.d/lxd-bridge stop
+  sudo service lxd-bridge stop
 SCRIPT
   sudo su -c 'cat <<EOF > /etc/default/lxd-bridge
   USE_LXD_BRIDGE="true"
@@ -38,7 +38,7 @@ SCRIPT
   LXD_IPV6_PROXY="false"
 EOF'
 sudo newgrp lxd << SCRIPT
-  sudo /etc/init.d/lxd-bridge start
+  sudo service lxd-bridge start
   lxc config set core.https_address [::]:8443
   lxc config set core.trust_password $PASSWORD
 SCRIPT
