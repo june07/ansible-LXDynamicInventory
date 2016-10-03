@@ -3,17 +3,17 @@ export DEBIAN_FRONTEND=noninteractive;
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
-sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install git build-essential python toilet -y -q
+sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
+sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update
+#sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq 
+sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq git build-essential python toilet apt-cacher-ng
 
 git clone https://github.com/ansible/ansible.git
 cd ansible
 git submodule update --init --recursive
 cd ..
 
-function compile() {
+compile() {
 	node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
 	chmod +x ./lxd.nex;
 	mkdir ./ansible/inventory
@@ -22,12 +22,16 @@ function compile() {
 }
 #compile();
 
-function spinner {
+spinner() {
 	COUNTER=0
-	SECONDS=$1
-	while [[ $COUNTER -lt $SECONDS ]]; do
-	  sleep 0.5; printf "\r${sp:i++%${#sp}:1}";
-	  COUNTER=$(($COUNTER+1))
+	SECS=$1
+  chars="/-\|"
+	while [[ $COUNTER -lt $SECS ]]; do
+    for (( i=0; i<${#chars}; i++ )); do
+      sleep 0.5
+      echo -en "${chars:$i:1}" "\r"
+    done
+	  ((COUNTER++))
 	done
 	echo ""
 }
@@ -38,12 +42,8 @@ if [[ ! $(dpkg --list lxd) ]]; then
   toilet -f wideterm --gay Configuring LXD on this host... -S
   ./installSetupLXD.sh local 80
 else
-  toilet -f wideterm --gay LXD is already on this host, skipping configuration... -S
+  toilet -f wideterm --gay LXD present, skipping configuration... -S
 fi
-toilet -f wideterm --gay Updating apt and installing apt-cacher-ng... -S
-sudo sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y -q apt-cacher-ng
 lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
 spinner 15
 
@@ -56,23 +56,32 @@ sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/reso
 toilet -f wideterm --gay Configuring LXD HOST container... -S
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
 lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
-
 spinner 15
 
 LXDIP=$(lxc list ubuntu-adi-test-lxdserver --format=json | jq '.[0].state.network.eth0.addresses[0].address'|tr -d "\"")
-#sudo iptables -t nat -A PREROUTING -d localhost -i eth0 -p tcp -m tcp --dport 18443 -j DNAT --to-destination $LXDIP:8443
 lxc remote add ubuntu-adi-test-lxdserver https://$LXDIP --password=$PASSWORD --accept-certificate
 
 lxc remote list; spinner 5
 
-toilet -f wideterm --gay Configuring nested container... -S
-lxc launch $IMAGE ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer
-lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer user.ansible.group adigroup
-#lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
-#lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
-lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer/tmp/
-lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer 100 $PASSWORD $LXDIP
-# Setup LXD container
+count=1
+howmany=3
+function setupNestedContainer {
+  toilet -f wideterm --gay Configuring nested container $1... -S
+  lxc launch $IMAGE ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1}
+  lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1} user.ansible.group adigroup
+  #lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
+  #lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
+  #lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1}/tmp/
+  #lxc exec ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1} /tmp/installSetupLXD.sh ubuntu-adi-test-lxdcontainer${1} 100 $PASSWORD $LXDIP
+}
+while [[ $count -le $howmany ]]; do
+  if [[ $count -eq $howmany ]]; then
+    setupNestedContainer $count
+  else
+    setupNestedContainer $count &
+  fi
+  ((count++))
+done
 
 cd ansible
 echo -e "[defaults]\nremote_tmp     = $HOME/.ansible/tmp" > ansible.cfg

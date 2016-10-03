@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/bin/bash -x
+export DEBIAN_FRONTEND=noninteractive;
 CONTAINER=$1
 NETWORK=$2
 PASSWORD=$3
 LXDSERVER=$4
+sudo perl -pi -e "s/127.0.0.1 localhost/127.0.0.1 localhost $(hostname)/" /etc/hosts
 if [[ $(echo $CONTAINER | grep -i server) || $(echo $CONTAINER | grep -i container) ]]; then
-  sudo echo -e "Acquire::http::Proxy \"http://${LXDSERVER}:3142\"" >> /etc/apt.conf;
+  sudo echo -e "Acquire::http::Proxy \"http://${LXDSERVER}:3142\";" >> /etc/apt/apt.conf;
 fi
-sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python lxd -y -q
+sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
+#sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install python lxd -qq
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
-  sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y apt-cacher-ng -q
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install apt-cacher-ng -qq
 fi
 
 #sudo newgrp lxd
