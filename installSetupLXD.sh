@@ -35,7 +35,7 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   LXD_IPV6_NETWORK=""
   LXD_IPV6_NAT="false"
   LXD_IPV6_PROXY="false"
-  EOF'
+EOF'
   sudo systemctl enable lxd-bridge
   sudo systemctl start lxd-bridge
   
