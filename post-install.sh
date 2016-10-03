@@ -1,14 +1,8 @@
-#!/bin/bash -x
+#!/bin/bash
 export DEBIAN_FRONTEND=noninteractive;
-HOSTNAME=$1
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 IMAGE="ubuntu-daily:16.04"
-sudo apt-get remove -y postgresql-9.1
-sudo apt-get remove -y postgresql-9.2
-sudo apt-get remove -y postgresql-9.3
-sudo apt-get remove -y postgresql-9.4
-sudo apt-get remove --purge postgresql
 sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
@@ -19,21 +13,23 @@ cd ansible
 git submodule update --init --recursive
 cd ..
 
-#node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
-
-chmod +x ./lxd.nex;
-mkdir ./ansible/inventory
-cp ./lxd.nex ./ansible/inventory/
-cp ./lxd.ini ./ansible/inventory/
+function compile() {
+	node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
+	chmod +x ./lxd.nex;
+	mkdir ./ansible/inventory
+	cp ./lxd.nex ./ansible/inventory/
+	cp ./lxd.ini ./ansible/inventory/
+}
+#compile();
 
 function spinner {
-COUNTER=0
-SECONDS=$1
-while [[ $COUNTER -lt $SECONDS ]]; do
-  sleep 0.5; printf "\r${sp:i++%${#sp}:1}";
-  COUNTER=$(($COUNTER+1))
-done
-echo ""
+	COUNTER=0
+	SECONDS=$1
+	while [[ $COUNTER -lt $SECONDS ]]; do
+	  sleep 0.5; printf "\r${sp:i++%${#sp}:1}";
+	  COUNTER=$(($COUNTER+1))
+	done
+	echo ""
 }
 
 chmod +x ./installSetupLXD.sh
@@ -44,15 +40,19 @@ if [[ ! $(dpkg --list lxd) ]]; then
 else
   toilet -f wideterm --gay LXD is already on this host, skipping configuration... -S
 fi
-  toilet -f wideterm --gay Updating apt and installing apt-cacher-ng... -S
-  sudo sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
-  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
-  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y -q apt-cacher-ng
-  lxc image copy $IMAGE local:
-  lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
-  spinner 15
+toilet -f wideterm --gay Updating apt and installing apt-cacher-ng... -S
+sudo sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y -q
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y -q apt-cacher-ng
+lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
+spinner 15
 
 CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | awk 'BEGIN {FS=" "}{print $2}' | cut -f1 -d"/")
+
+# Update hosts file to resolv hostname of LXD container.
+sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
+sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
+
 toilet -f wideterm --gay Configuring LXD HOST container... -S
 lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
 lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
@@ -79,10 +79,8 @@ echo -e "[defaults]\nremote_tmp     = $HOME/.ansible/tmp" > ansible.cfg
 echo -e "inventory     = inventory" >> ansible.cfg
 mkdir inventory
 echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
-
-sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
-sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
+source ./hacking/env-setup
 ./inventory/lxd.nex --list
 ansible -m setup ubuntu-adi-test-lxdserver
-sudo perl -0 -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
+sudo perl -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
 
