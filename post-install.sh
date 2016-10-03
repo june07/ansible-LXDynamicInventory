@@ -2,7 +2,8 @@
 export DEBIAN_FRONTEND=noninteractive;
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
-IMAGE="ubuntu-daily:16.04"
+#IMAGE="ubuntu-daily:16.04"
+IMAGE="ubuntu-daily:14.04"
 sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
 sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update
 #sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq 

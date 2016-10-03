@@ -12,21 +12,28 @@ if [[ $(lsb_release -c|grep -i "trusty") ]]; then
   sudo add-apt-repository -y ppa:pitti/systemd > /dev/null 2>&1
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq -t trusty-backports lxd
+else
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq lxd
 fi
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" purge -qq postgresql-9.5
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" upgrade -qq
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq python lxd
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq python
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq apt-cacher-ng
 fi
 
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
-sudo newgrp lxd << SCRIPT
-  sudo systemctl stop lxd-bridge
-  sudo systemctl --system daemon-reload
+  if [[ $(lsb_release -c|grep -i "trusty") ]]; then
+    sudo newgrp lxd << SCRIPT
+      sudo service lxd stop
 SCRIPT
+  else
+    sudo newgrp lxd << SCRIPT
+      sudo systemctl stop lxd-bridge
+      sudo systemctl --system daemon-reload
+SCRIPT
+  fi
   sudo su -c 'cat <<EOF > /etc/default/lxd-bridge
 USE_LXD_BRIDGE="true"
 LXD_BRIDGE="lxdbr0"
@@ -45,12 +52,20 @@ LXD_IPV6_NETWORK=""
 LXD_IPV6_NAT="false"
 LXD_IPV6_PROXY="false"
 EOF'
-sudo newgrp lxd << SCRIPT
-  sudo systemctl enable lxd-bridge
-  sudo systemctl start lxd-bridge
-  lxc config set core.https_address [::]:8443
-  lxc config set core.trust_password $PASSWORD
+  if [[ $(lsb_release -c|grep -i "trusty") ]]; then
+    sudo newgrp lxd << SCRIPT
+      sudo service lxd start
+      lxc config set core.https_address [::]:8443
+      lxc config set core.trust_password $PASSWORD
 SCRIPT
+  else
+    sudo newgrp lxd << SCRIPT
+      sudo systemctl enable lxd-bridge
+      sudo systemctl start lxd-bridge
+      lxc config set core.https_address [::]:8443
+      lxc config set core.trust_password $PASSWORD
+SCRIPT
+  fi
 fi
 
 sudo newgrp lxd << SCRIPT
