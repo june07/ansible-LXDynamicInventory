@@ -38,7 +38,6 @@ spinner() {
 }
 
 chmod +x ./installSetupLXD.sh
-sudo usermod -a -G lxd $USER
 
 if [[ ! $(dpkg --list lxd) ]]; then
   toilet -f wideterm --gay Configuring LXD on this host... -S
@@ -47,6 +46,7 @@ else
   toilet -f wideterm --gay LXD present, skipping configuration... -S
 fi
 
+sudo usermod -a -G lxd $USER
 sudo lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
 spinner 15
 
