@@ -8,6 +8,9 @@ sudo perl -pi -e "s/127.0.0.1 localhost/127.0.0.1 localhost $(hostname)/" /etc/h
 if [[ $(echo $CONTAINER | grep -i server) || $(echo $CONTAINER | grep -i container) ]]; then
   sudo echo -e "Acquire::http::Proxy \"http://${LXDSERVER}:3142\";" >> /etc/apt/apt.conf;
 fi
+
+sudo apt-get --purge remove postgresql\*
+
 if [[ $(lsb_release -c|grep -i "trusty") ]]; then
   sudo add-apt-repository -y ppa:pitti/systemd > /dev/null 2>&1
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
