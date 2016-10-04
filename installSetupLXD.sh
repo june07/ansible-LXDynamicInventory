@@ -55,23 +55,16 @@ LXD_IPV6_NETWORK=""
 LXD_IPV6_NAT="false"
 LXD_IPV6_PROXY="false"
 EOF'
+  sudo usermod -a -G lxd $USER
   if [[ $(lsb_release -c|grep -i "trusty") ]]; then
-    sudo newgrp lxd << SCRIPT
-      sudo service lxd start
-      lxc config set core.https_address [::]:8443
-      lxc config set core.trust_password $PASSWORD
-SCRIPT
+    sudo service lxd start
+    lxc config set core.https_address [::]:8443
+    lxc config set core.trust_password $PASSWORD
   else
-    sudo newgrp lxd << SCRIPT
-      sudo systemctl enable lxd-bridge
-      sudo systemctl start lxd-bridge
-      lxc config set core.https_address [::]:8443
-      lxc config set core.trust_password $PASSWORD
-SCRIPT
+    sudo systemctl enable lxd-bridge
+    sudo systemctl start lxd-bridge
+    lxc config set core.https_address [::]:8443
+    lxc config set core.trust_password $PASSWORD
   fi
 fi
-
-sudo newgrp lxd << SCRIPT
-  sudo lxd init --auto --network-address 0.0.0.0 --network-port 8443 --trust-password=$PASSWORD
-SCRIPT
-
+sudo lxd init --auto --network-address 0.0.0.0 --network-port 8443 --trust-password=$PASSWORD
