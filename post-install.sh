@@ -4,7 +4,7 @@ export DEBIAN_FRONTEND=noninteractive;
 PASSWORD=8hJKBwMzxAycXf0CfVWy
 #IMAGE="ubuntu-daily:16.04"
 IMAGE="ubuntu-daily:14.04"
-sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
+#sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable -y > /dev/null 2>&1
 sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update
 #sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq 
 sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq git build-essential python toilet apt-cacher-ng
@@ -21,7 +21,7 @@ compile() {
 	cp ./lxd.nex ./ansible/inventory/
 	cp ./lxd.ini ./ansible/inventory/
 }
-#compile();
+compile();
 
 spinner() {
 	COUNTER=0
