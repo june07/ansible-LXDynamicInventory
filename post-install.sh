@@ -21,7 +21,7 @@ compile() {
 	cp ./lxd.nex ./ansible/inventory/
 	cp ./lxd.ini ./ansible/inventory/
 }
-compile()
+compile
 
 spinner() {
 	COUNTER=0
