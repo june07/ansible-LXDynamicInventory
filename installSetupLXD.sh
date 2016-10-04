@@ -26,16 +26,14 @@ if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq apt-cacher-ng
 fi
 
+sudo usermod -a -G lxd $USER
+
 if [[ ! $(echo $CONTAINER | grep -i container) ]]; then
   if [[ $(lsb_release -c|grep -i "trusty") ]]; then
-    sudo newgrp lxd << SCRIPT
       sudo service lxd stop
-SCRIPT
   else
-    sudo newgrp lxd << SCRIPT
       sudo systemctl stop lxd-bridge
       sudo systemctl --system daemon-reload
-SCRIPT
   fi
   sudo su -c 'cat <<EOF > /etc/default/lxd-bridge
 USE_LXD_BRIDGE="true"
@@ -55,16 +53,15 @@ LXD_IPV6_NETWORK=""
 LXD_IPV6_NAT="false"
 LXD_IPV6_PROXY="false"
 EOF'
-  sudo usermod -a -G lxd $USER
   if [[ $(lsb_release -c|grep -i "trusty") ]]; then
     sudo service lxd start
-    lxc config set core.https_address [::]:8443
-    lxc config set core.trust_password $PASSWORD
+    sudo lxc config set core.https_address [::]:8443
+    sudo lxc config set core.trust_password $PASSWORD
   else
     sudo systemctl enable lxd-bridge
     sudo systemctl start lxd-bridge
-    lxc config set core.https_address [::]:8443
-    lxc config set core.trust_password $PASSWORD
+    sudo lxc config set core.https_address [::]:8443
+    sudo lxc config set core.trust_password $PASSWORD
   fi
 fi
 sudo lxd init --auto --network-address 0.0.0.0 --network-port 8443 --trust-password=$PASSWORD
