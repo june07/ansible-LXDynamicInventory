@@ -38,6 +38,7 @@ spinner() {
 }
 
 chmod +x ./installSetupLXD.sh
+sudo usermod -a -G lxd $USER
 
 if [[ ! $(dpkg --list lxd) ]]; then
   toilet -f wideterm --gay Configuring LXD on this host... -S
@@ -45,7 +46,8 @@ if [[ ! $(dpkg --list lxd) ]]; then
 else
   toilet -f wideterm --gay LXD present, skipping configuration... -S
 fi
-lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
+
+sudo lxc launch $IMAGE ubuntu-adi-test-lxdserver -c security.nesting=true -c security.privileged=true
 spinner 15
 
 CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | awk 'BEGIN {FS=" "}{print $2}' | cut -f1 -d"/")
@@ -53,23 +55,24 @@ CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | aw
 # Update hosts file to resolv hostname of LXD container.
 sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
 sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
+echo -e "$(lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -f2)\tubuntu-adi-test-lxdserver" | sudo tee -a /etc/hosts
 
 toilet -f wideterm --gay Configuring LXD HOST container... -S
-lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
-lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
+sudo lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
+sudo lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
 spinner 15
 
 LXDIP=$(lxc list ubuntu-adi-test-lxdserver --format=json | jq '.[0].state.network.eth0.addresses[0].address'|tr -d "\"")
-lxc remote add ubuntu-adi-test-lxdserver https://$LXDIP --password=$PASSWORD --accept-certificate
+sudo lxc remote add ubuntu-adi-test-lxdserver https://$LXDIP --password=$PASSWORD --accept-certificate
 
-lxc remote list; spinner 5
+sudo lxc remote list; spinner 5
 
 count=1
 howmany=3
 function setupNestedContainer {
   toilet -f wideterm --gay Configuring nested container $1... -S
-  lxc launch $IMAGE ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1}
-  lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1} user.ansible.group adigroup
+  sudo lxc launch $IMAGE ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1}
+  sudo lxc config set ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1} user.ansible.group adigroup
   #lxc config set ubuntu-adi-test-lxdserver core.https_address [::]:8443
   #lxc config set ubuntu-adi-test-lxdserver core.trust_password $PASSWORD
   #lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer${1}/tmp/
@@ -93,4 +96,6 @@ source ./hacking/env-setup
 ./inventory/lxd.nex --list
 ansible -m setup ubuntu-adi-test-lxdserver
 sudo perl -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
+sudo grep -v ubuntu-adi-test-lxdserver /etc/hosts | sudo tee -a /etc/hosts
+
 

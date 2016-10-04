@@ -20,7 +20,6 @@ function readConfigFile(file, callback) {
 }
 const	Promise = require('bluebird'),
 	Unirest = Promise.promisifyAll(require('unirest')),
-	deasync = require('deasync'),
 	fs = require('fs'),
 	os = require('os'),
 	writeFile = Promise.promisify(fs.writeFile),
