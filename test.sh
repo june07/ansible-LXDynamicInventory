@@ -8,8 +8,6 @@ echo -e "inventory     = inventory" >> ansible.cfg
 mkdir inventory
 echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
 
-sudo pip install pyyaml
-
 LXD_BRIDGE_IP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | awk 'BEGIN {FS=" "}{print $2}' | cut -f1 -d"/")
 # Update hosts file to resolv hostname of LXD container.
 sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
