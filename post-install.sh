@@ -7,7 +7,7 @@ IMAGE="ubuntu-daily:14.04"
 sudo add-apt-repository ppa:ansible/ansible -y > /dev/null 2>&1
 sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update
 #sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq 
-sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq git build-essential python toilet apt-cacher-ng ansible
+sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -qq git build-essential python toilet apt-cacher-ng ansible pip
 
 git clone https://github.com/ansible/ansible.git
 cd ansible
@@ -87,15 +87,5 @@ while [[ $count -le $howmany ]]; do
   ((count++))
 done
 
-cd ansible
-echo -e "[defaults]\nremote_tmp     = $HOME/.ansible/tmp" > ansible.cfg
-echo -e "inventory     = inventory" >> ansible.cfg
-mkdir inventory
-echo -e "[lxdhosts]\nubuntu-adi-test-lxdserver ansible_connection=lxd" > ./inventory/development_inventory
-source ./hacking/env-setup
-./inventory/lxd.nex --list
-ansible -m setup ubuntu-adi-test-lxdserver
-sudo perl -pi -e "s/nameserver $CACHERIP\n//" /etc/resolv.conf
-sudo grep -v ubuntu-adi-test-lxdserver /etc/hosts | sudo tee -a /etc/hosts
-
+toilet -f wideterm --gay $0 complete. -S
 
