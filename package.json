@@ -4,7 +4,7 @@
   "description": "Ansible Dynamic Inventory Script for LXD Containers",
   "main": "lxd.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./test.sh",
     "postinstall": "./post-install.sh"
   },
   "repository": {
