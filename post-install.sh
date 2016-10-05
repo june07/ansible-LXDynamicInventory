@@ -41,7 +41,7 @@ chmod +x ./installSetupLXD.sh
 
 if [[ ! $(dpkg --list lxd) ]]; then
   toilet -f wideterm --gay Configuring LXD on this host... -S
-  ./installSetupLXD.sh local 80
+  ./installSetupLXD.sh local 80 $PASSWORD
 else
   toilet -f wideterm --gay LXD present, skipping configuration... -S
 fi
@@ -55,14 +55,14 @@ CACHERIP=$(ip addr show dev lxdbr0 scope global | grep inet | grep -v inet6 | aw
 # Update hosts file to resolv hostname of LXD container.
 sudo cp /etc/resolv.conf /tmp/.resolv.conf.backup-$(date +%s)
 sudo perl -0 -pi -e "s/nameserver /nameserver $CACHERIP\nnameserver /" /etc/resolv.conf
-echo -e "$(lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -f2)\tubuntu-adi-test-lxdserver" | sudo tee -a /etc/hosts
+echo -e "$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -f2)\tubuntu-adi-test-lxdserver" | sudo tee -a /etc/hosts
 
 toilet -f wideterm --gay Configuring LXD HOST container... -S
 sudo lxc file push installSetupLXD.sh ubuntu-adi-test-lxdserver/tmp/
 sudo lxc exec ubuntu-adi-test-lxdserver /tmp/installSetupLXD.sh ubuntu-adi-test-lxdserver 90 $PASSWORD $CACHERIP
 spinner 15
 
-LXDIP=$(lxc list ubuntu-adi-test-lxdserver --format=json | jq '.[0].state.network.eth0.addresses[0].address'|tr -d "\"")
+LXDIP=$(sudo lxc list ubuntu-adi-test-lxdserver --format=json | jq '.[0].state.network.eth0.addresses[0].address'|tr -d "\"")
 sudo lxc remote add ubuntu-adi-test-lxdserver https://$LXDIP --password=$PASSWORD --accept-certificate
 
 sudo lxc remote list; spinner 5
