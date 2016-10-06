@@ -16,10 +16,9 @@ echo -e "$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -
 
 # Execute tests.
 source ./hacking/env-setup
-echo $PYTHONPATH
 sudo ansible --version
-./inventory/lxd.nex --host
-./inventory/lxd.nex --list
+sudo ./inventory/lxd.nex --host
+sudo ./inventory/lxd.nex --list
 sudo ansible -m setup ubuntu-adi-test-lxdserver
 
 # Recover state of resolv and hosts file
