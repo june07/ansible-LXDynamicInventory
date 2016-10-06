@@ -20,7 +20,7 @@ sudo ansible --version
 sudo ./inventory/lxd.nex --host
 sudo ./inventory/lxd.nex --list
 sudo ./inventory/lxd.js --list
-sudo ping ubuntu-adi-test-lxdserver
+cat /etc/hosts
 sudo lxc list ubuntu-adi-test-lxdserver:
 sudo ansible -i ./inventory/lxd.nex -m setup ubuntu-adi-test-lxdserver
 
