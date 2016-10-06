@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 export DEBIAN_FRONTEND=noninteractive;
 #PASSWORD=$(date | md5sum | cut -f1 -d " " | tee /tmp/adi-password.txt)
 PASSWORD=8hJKBwMzxAycXf0CfVWy
@@ -89,5 +89,6 @@ while [[ $count -le $howmany ]]; do
   ((count++))
 done
 
+sudo lxc list
 toilet -f wideterm --gay $0 complete. -S
 
