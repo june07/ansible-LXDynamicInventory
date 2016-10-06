@@ -19,6 +19,7 @@ compile() {
 	node --harmony node_modules/nexe/bin/nexe -i lxd.js -o lxd.nex -f
 	chmod +x ./lxd.nex;
 	mkdir ./ansible/inventory
+	cp ./lxd.js ./ansible/inventory/
 	cp ./lxd.nex ./ansible/inventory/
 	cp ./lxd.ini ./ansible/inventory/
 }
