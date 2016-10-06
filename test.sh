@@ -16,10 +16,11 @@ echo -e "$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -
 
 # Execute tests.
 source ./hacking/env-setup
-ansible --version
+echo $PYTHONPATH
+sudo ansible --version
 ./inventory/lxd.nex --host
 ./inventory/lxd.nex --list
-ansible -m setup ubuntu-adi-test-lxdserver
+sudo ansible -m setup ubuntu-adi-test-lxdserver
 
 # Recover state of resolv and hosts file
 sudo perl -pi -e "s/nameserver $LXD_BRIDGE_IP\n//" /etc/resolv.conf
