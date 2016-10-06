@@ -81,6 +81,8 @@ function setupNestedContainer {
 while [[ $count -le $howmany ]]; do
   if [[ $count -eq $howmany ]]; then
     setupNestedContainer $count
+    toilet -f wideterm --gay Waiting 60 seconds... -S
+    spinner 60
   else
     setupNestedContainer $count &
   fi
