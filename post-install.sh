@@ -7,7 +7,8 @@ IMAGE="ubuntu-daily:14.04"
 sudo add-apt-repository ppa:ansible/ansible -y > /dev/null 2>&1
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" update -qq
 #sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -qq 
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y git build-essential python toilet apt-cacher-ng ansible python-yaml
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y git build-essential python toilet apt-cacher-ng python-yaml python-pip
+sudo pip install ansible
 
 git clone https://github.com/ansible/ansible.git
 cd ansible
