@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 toilet -f wideterm --gay Starting tests... -S
 
