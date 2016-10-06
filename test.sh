@@ -20,7 +20,7 @@ sudo ansible --version
 sudo ./inventory/lxd.nex --host
 sudo ./inventory/lxd.nex --list
 sudo lxc list ubuntu-adi-test-lxdserver:
-sudo ansible -m setup ubuntu-adi-test-lxdserver
+sudo ansible -i ./inventory/lxd.nex -m setup ubuntu-adi-test-lxdserver
 
 # Recover state of resolv and hosts file
 sudo perl -pi -e "s/nameserver $LXD_BRIDGE_IP\n//" /etc/resolv.conf
