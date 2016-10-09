@@ -222,7 +222,7 @@ generateClientCertificate()
   			Promise.all(hostsToInventory)
   			.then(function() {});
 			}); break;
-	  case "--host": console.log("Add this functionality!  https://github.com/june07/ansible.git"); break;
+	  case "--host": console.log("{}"); break;
 	}
 });
 })();

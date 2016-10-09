@@ -5,6 +5,7 @@
   "main": "lxd.js",
   "scripts": {
     "test": "./test.sh",
+    "install": "./install.sh",
     "postinstall": "./post-install.sh"
   },
   "repository": {
@@ -33,7 +34,7 @@
     "Nodejs"
   ],
   "author": "Will Smith",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/june07/ansible-dynamic-inventory/issues"
   },
