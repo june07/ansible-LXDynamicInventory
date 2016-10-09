@@ -10,11 +10,15 @@ I did find one other dynamic inventory script for LXD, however it did not meet m
 ```
 $ npm install --save
 ```
-This will simply copy the precompiled lxd.nex script, along with lxd.ini into your [inventory directory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html#using-inventory-directories-and-multiple-inventory-sources "Ansible documentation on multiple inventory sources").
+This will simply copy the precompiled lxd.nex script, along with lxd.ini into your [inventory directory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html#using-inventory-directories-and-multiple-inventory-sources "Ansible documentation on multiple inventory sources").  Then update your inventory file and add any LXD hosts using the lxd connector as in ```ubuntu-adi-test-lxdserver ansible_connection=lxd```.  You should then be able to issue a playbook or other applicable ansible command to any LXD containers configured on that LXD host.
 
-You will want to change the lxd.ini file to reflect your own SSL cert details
+### a bit more detail...
+
+Since authentication for the LXD API is done through client certificate authentication, this script will automatically generate a client certificate.  You will want to change the lxd.ini file to reflect your own SSL cert details:
+
 ![Code Editor Screenshot lxd.ini](https://june07.github.io/image/dillinger.june07.com-clipboard01.jpg)
 
+The certifcate will be stored in ```~/.ansible/tmp/ssl``` or whatever location you have configured for **_remote_tmp_** in your ```ansible.cfg``` file.
 
 ## Building from source
 ```
