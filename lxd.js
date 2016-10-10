@@ -185,10 +185,10 @@ var listOptionHandler = function(host) {
 					var ipv4Address = JSONPath({json: restResponse[1], path: "*.network.eth0.addresses.[0].address"});
 					if (JSONPath({json: restResponse[0], path: "*.config[user.ansible.group]"}) == group) {
 						if ((restResponses.length-1) == index) {
-							console.log("\""+host+":::"+name+"\"],");
+							console.log("\""+host+":"+name+"\"],");
 							console.log("\"vars\": { \"ansible_connection\":\"lxd\"}");
 						} else {
-							process.stdout.write("\""+host+":::"+name+"\", ");
+							process.stdout.write("\""+host+":"+name+"\", ");
 						}
 					}
 				});
