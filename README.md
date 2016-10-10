@@ -1,10 +1,12 @@
-# ![pageres](https://june07.github.io/Ansible-LXDynamic-Inventory/media/aLXDiLogo.png)![Build Status](https://img.shields.io/travis/june07/Ansible-LXDynamic-Inventory.svg)
-## Ansible LXDynamic Inventory ##
-A dynamic inventory script for use with Ansible and LXD Containers.
+# ![pageres](http://june07.github.io/image/image3408.png)![Build Status](https://img.shields.io/travis/june07/Ansible-LXDynamic-Inventory.svg)
+## Ansible LXDynamic Inventory (with NodeJS)
+A dynamic inventory script for use with Ansible and LXD Containers and written in node.js.
 
 I did find one other dynamic inventory script for LXD, however it did not meet my needs.  Some requirements which are met by this script are:
 * Utilizes the LXD REST API throughout starting at the Ansible host.
 * Groups can be dynamically configured based on meta variables set on the containers.
+
+And I chose NodeJS because I like JavaScript.
 
 ## Install
 ```
