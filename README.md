@@ -31,4 +31,4 @@ Will compile the lxd.js script into a self contained executable lxd.nex which ca
 Although the actual build of the lxd.js script should work anywhere (that node would work), the npm install from source only supports Ubuntu and has been tested on both Trusty (Travis-ci) and Xenial.  Basically the tests involve creating a test LXD server which in turn creates several nested test containers, afterwhich the script can be used on the aforementioned test environment.
 
 ## License
-MIT B) [June07](https://github.com/june07)
+MIT © [June07](https://github.com/june07)
