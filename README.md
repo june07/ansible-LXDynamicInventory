@@ -13,6 +13,7 @@ $ npm install --save
 This will simply copy the precompiled lxd.nex script, along with lxd.ini into your [inventory directory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html#using-inventory-directories-and-multiple-inventory-sources "Ansible documentation on multiple inventory sources").  Then update your inventory file and add any LXD hosts using the lxd connector as in ```ubuntu-adi-test-lxdserver ansible_connection=lxd```.
 
 You should then be able to issue a playbook or other applicable ansible command to any LXD containers configured on that LXD host!
+![Code Editor Screenshot lxd.ini](https://june07.github.io/image/ansible-dynamic-inventory-clipboard01.png)
 
 ### a bit more detail...
 
