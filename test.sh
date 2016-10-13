@@ -16,8 +16,6 @@ echo -e "\n$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' '
 
 # Execute tests.
 cat /etc/hosts
-ping -c 3 ubuntu-adi-test-lxdserver
-cat /etc/hosts
 source ./hacking/env-setup
 sudo ansible --version
 sudo ./inventory/lxd.nex --list
