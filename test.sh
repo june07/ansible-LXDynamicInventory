@@ -15,7 +15,9 @@ sudo perl -0 -pi -e "s/nameserver /nameserver $LXD_BRIDGE_IP\nnameserver /" /etc
 echo -e "\n$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -f2)\tubuntu-adi-test-lxdserver" | sudo tee -a /etc/hosts
 
 # Execute tests.
+cat /etc/hosts
 ping -c 3 ubuntu-adi-test-lxdserver
+cat /etc/hosts
 source ./hacking/env-setup
 sudo ansible --version
 sudo ./inventory/lxd.nex --list
