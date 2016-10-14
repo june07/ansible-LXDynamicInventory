@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 toilet -f wideterm --gay Starting tests... -S
 
@@ -21,13 +21,12 @@ source ./hacking/env-setup
 #cat /etc/hosts
 #sudo lxc list ubuntu-adi-test-lxdserver:
 sudo rm ./inventory/lxd.js
+sudo chmod +x ./inventory/lxd.js
 sudo chmod +x ./inventory/lxd.nex
-sudo ansible -m setup ubuntu-adi-test-lxdserver
-sudo ansible -m setup ubuntu-adi-test-lxdserver
-sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer1
-sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer2
-sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer3
+sudo ansible --version
+sudo ansible-playbook ../ping.yml
 
 # Recover state of resolv and hosts file
 sudo perl -pi -e "s/nameserver $LXD_BRIDGE_IP\n//" /etc/resolv.conf
-sudo grep -v ubuntu-adi-test-lxdserver /etc/hosts | sudo tee -a /etc/hosts
+sudo cp /etc/hosts /tmp/hosts-$(date +%s)
+sudo grep -v ubuntu-adi-test-lxdserver /etc/hosts | sudo tee /etc/hosts

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "./test.sh",
     "install": "./install.sh",
+    "build": "./build.sh",
     "postinstall": "./post-install.sh"
   },
   "repository": {
