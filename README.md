@@ -56,4 +56,4 @@ or by other APIs such as the LXD REST API  More on available APIs here https://l
 
 
 ## License
-MIT B) [June07](https://github.com/june07)
+MIT © [June07](https://github.com/june07)
