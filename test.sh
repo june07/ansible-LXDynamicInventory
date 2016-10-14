@@ -15,13 +15,16 @@ sudo perl -0 -pi -e "s/nameserver /nameserver $LXD_BRIDGE_IP\nnameserver /" /etc
 echo -e "\n$(sudo lxc list ubuntu-adi-test-lxdserver -c4 | grep eth0 | cut -d' ' -f2)\tubuntu-adi-test-lxdserver" | sudo tee -a /etc/hosts
 
 # Execute tests.
-cat /etc/hosts
 source ./hacking/env-setup
-sudo ansible --version
-sudo ./inventory/lxd.nex --list
-cat /etc/hosts
-sudo lxc list ubuntu-adi-test-lxdserver:
+#sudo ansible --version
+#sudo ./inventory/lxd.nex --list
+#cat /etc/hosts
+#sudo lxc list ubuntu-adi-test-lxdserver:
+sudo rm ./inventory/lxd.js
 sudo ansible -m setup ubuntu-adi-test-lxdserver
+sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer1
+sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer2
+sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer3
 
 # Recover state of resolv and hosts file
 sudo perl -pi -e "s/nameserver $LXD_BRIDGE_IP\n//" /etc/resolv.conf
