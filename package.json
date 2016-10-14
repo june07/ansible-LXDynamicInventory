@@ -1,6 +1,6 @@
 {
   "name": "ansible-dynamic-inventory",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ansible Dynamic Inventory Script for LXD Containers",
   "main": "lxd.js",
   "scripts": {
