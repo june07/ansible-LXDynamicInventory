@@ -21,6 +21,8 @@ source ./hacking/env-setup
 #cat /etc/hosts
 #sudo lxc list ubuntu-adi-test-lxdserver:
 sudo rm ./inventory/lxd.js
+sudo chmod +x ./inventory/lxd.nex
+sudo ansible -m setup ubuntu-adi-test-lxdserver
 sudo ansible -m setup ubuntu-adi-test-lxdserver
 sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer1
 sudo ansible -m setup ubuntu-adi-test-lxdserver:ubuntu-adi-test-lxdcontainer2
