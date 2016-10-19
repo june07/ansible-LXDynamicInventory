@@ -1,4 +1,4 @@
-# ![pageres](http://june07.github.io/image/image3408.png)![Build Status](https://img.shields.io/travis/june07/Ansible-LXDynamic-Inventory.svg)
+# ![pageres](http://june07.github.io/image/image3408.png)![Build Status](https://img.shields.io/travis/june07/Ansible-LXDynamic-Inventory.svg) ![README.md shield](http://do2.june07.com:3000/shields/june07/ansible-dynamic-inventory)
 ## Ansible LXDynamic Inventory (with NodeJS)
 A dynamic inventory script for use with Ansible and LXD Containers and written in node.js.
 
@@ -56,4 +56,4 @@ or by other APIs such as the LXD REST API  More on available APIs here https://l
 
 
 ## License
-MIT © [June07](https://github.com/june07)
+MIT B) [June07](https://github.com/june07)
